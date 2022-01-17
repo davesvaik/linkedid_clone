@@ -17,6 +17,15 @@ const Header = (props) => {
                         <img src="/images/search-icon.svg" alt="" />    
                     </SearchIcon>
                 </Search>
+                <Nav>
+                    <NavListWrap>
+                        <NavList>
+                            <a>
+                                <img src="/images/nav-home.svg" alt="" />
+                            </a>
+                        </NavList>
+                    </NavListWrap>
+                </Nav>
             </Content>
         </Container>
     );
@@ -47,10 +56,61 @@ const Logo = styled.span`
 `
 
 const Search = styled.div`
+    opacity: 1;
+    flex-grow: 1;
+    position: relative;
 
+    & > div {
+        max-width: 280px;
+        input {
+            border: none;
+            box-shadow: none;
+            background-color: #eef3f8;
+            border-radius: 2px;
+            color: rgba(0, 0, 0, 0.9);
+            width: 218px;
+            padding: 0 8px 0 40px;
+            line-height: 1.75;
+            font-weight: 400;
+            font-size: 14px;
+            height: 34px;
+            border-color: #dce6f1;
+            vertical-align: text-top;
+        }
+    }
 `
 
 const SearchIcon = styled.div`
+    width: 40px;
+    position: absolute;
+    z-index: 1;
+    top: 10px;
+    left: 2px;
+    border-radius: 0 2px 2px 0;
+    margin: 0;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`
+const Nav = styled.nav`
+    margin-left: auto;
+    display: block;
+
+    @media (max-width: 768px) {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        background: white;
+        width: 100%;
+    }
+`
+
+const NavListWrap = styled.ul`
+
+`
+
+const NavList = styled.li`
 
 `
 

@@ -98,7 +98,7 @@ const Main = (props) => {
                 src="https://img.icons8.com/ultraviolet/40/000000/comments.png"
                 alt=""
               />
-              <span>Comments</span>
+              <span>Comment</span>
             </button>
             <button>
               <img

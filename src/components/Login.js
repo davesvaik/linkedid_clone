@@ -1,4 +1,5 @@
-import styled from 'styled-components';
+import styled from "styled-components";
+import { connect } from "react-redux";
 
 const Login = (props) => {
   return (
@@ -138,7 +139,7 @@ const Form = styled.div`
   width: 408px;
   @media (max-width: 768px) {
     margin-top: 20px;
-    
+
     width: 100%;
   }
 `;
@@ -164,4 +165,10 @@ const Google = styled.button`
   }
 `;
 
-export default Login;
+const mapStateToProps = (state) => {
+  return {};
+};
+
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);

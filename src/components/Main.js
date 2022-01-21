@@ -46,7 +46,7 @@ const Main = (props) => {
       <div>
         <Article>
           <SharedActor>
-            <a>
+            <a href="!#">
               <img src="/images/user.svg" alt="" />
               <div>
                 <span>Title</span>
@@ -63,7 +63,7 @@ const Main = (props) => {
           </SharedActor>
           <Description>Description</Description>
           <SharedImg>
-            <a>
+            <a href="!#">
               <img src="/images/shared-image.jpg" alt="" />
             </a>
           </SharedImg>
@@ -82,7 +82,7 @@ const Main = (props) => {
               </button>
             </li>
             <li>
-              <a>2 comments</a>
+              <a href="!#">2 comments</a>
             </li>
           </SocialCounts>
           <SocialActions>

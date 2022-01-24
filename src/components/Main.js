@@ -1,13 +1,35 @@
 import styled from "styled-components";
+import PostModal from "./PostModal";
+import { useState } from "react";
 
 const Main = (props) => {
+  const [showModal, setShowModal] = useState("close");
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    switch (showModal) {
+      case "open":
+        setShowModal("close");
+        break;
+      case "close":
+        setShowModal("open");
+        break;
+      default:
+        setShowModal("close");
+        break;
+    }
+  };
   return (
     <Container>
       <ShareBox>
         Share
         <div>
           <img src="/images/user.svg" alt="" />
-          <button>Start a post</button>
+          <button onClick={handleClick}>Start a post</button>
         </div>
         <div>
           <button>
@@ -46,7 +68,7 @@ const Main = (props) => {
       <div>
         <Article>
           <SharedActor>
-            <a href="!#">
+            <a>
               <img src="/images/user.svg" alt="" />
               <div>
                 <span>Title</span>
@@ -63,7 +85,7 @@ const Main = (props) => {
           </SharedActor>
           <Description>Description</Description>
           <SharedImg>
-            <a href="!#">
+            <a>
               <img src="/images/shared-image.jpg" alt="" />
             </a>
           </SharedImg>
@@ -82,7 +104,7 @@ const Main = (props) => {
               </button>
             </li>
             <li>
-              <a href="!#">2 comments</a>
+              <a>2 comments</a>
             </li>
           </SocialCounts>
           <SocialActions>
@@ -117,6 +139,7 @@ const Main = (props) => {
           </SocialActions>
         </Article>
       </div>
+      <PostModal showModal={showModal} handleClick={handleClick} />
     </Container>
   );
 };

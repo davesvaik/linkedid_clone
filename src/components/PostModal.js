@@ -1,16 +1,48 @@
 import styled from "styled-components";
 import { useState } from "react";
+import ReactPlayer from "react-player";
+import { connect } from "react-redux";
 
 const PostModal = (props) => {
   const [editorText, setEditorText] = useState("");
+  //   define state for the text editor
+  const [shareImage, setShareImage] = useState("");
+  // define state for the image sharing function
+  const [videoLink, setVideoLink] = useState("");
+  //   define state for the video player
+  const [assetArea, setAssetArea] = useState("");
+  //   define state to change between uploaded image and video player
+
+  const handleChange = (e) => {
+    const image = e.target.files[0];
+
+    if (image === "" || image === undefined) {
+      alert(`not an image, the file is a ${typeof image}`);
+      return;
+    }
+
+    setShareImage(image);
+  };
+
+  const switchAssetArea = (area) => {
+    setShareImage("");
+    setVideoLink("");
+    setAssetArea(area);
+    //   define states
+  };
 
   const reset = (e) => {
     setEditorText("");
+    setShareImage("");
+    setVideoLink("");
+    setAssetArea("");
     props.handleClick(e);
+    // resetting the states
   };
 
   return (
     <>
+      {/* JSX fragment, no keys/attributes */}
       {props.showModal === "open" && (
         <Container>
           <Content>
@@ -25,8 +57,12 @@ const PostModal = (props) => {
             </Header>
             <SharedContent>
               <UserInfo>
-                <img src="/images/user.svg" alt="" />
-                <span>Name</span>
+                {props.user.photoURL ? (
+                  <img src={props.user.photoURL} />
+                ) : (
+                  <img src="/images/user.svg" alt="" />
+                )}
+                <span>{props.user.displayName}</span>
               </UserInfo>
               <Editor>
                 <textarea
@@ -34,18 +70,59 @@ const PostModal = (props) => {
                   onChange={(e) => setEditorText(e.target.value)}
                   placeholder="What do you want to talk about?"
                   autoFocus={true}
-                ></textarea>
+                  //   texteditor is empty and has a placeholder. then on event, change to user input
+                />
+                {assetArea === "image" ? (
+                  // if asset is an image, open up to upload an image
+                  <UploadImage>
+                    <input
+                      type="file"
+                      accept="image/gif, image/jpeg, image/png"
+                      name="image"
+                      id="file"
+                      style={{ display: "none" }}
+                      onChange={handleChange}
+                      // takes in files of type gif, jpeg and png
+                    />
+                    <p>
+                      <label htmlFor="file">Select an image to share</label>
+                    </p>
+                    {shareImage && (
+                      <img src={URL.createObjectURL(shareImage)} />
+                    )}
+                    {/* show the selected image as a preview */}
+                  </UploadImage>
+                ) : (
+                  assetArea === "media" && (
+                    //   if asset is a video, open up to add video link
+                    <>
+                      <input
+                        type="text"
+                        placeholder="Please input a video link"
+                        value={videoLink}
+                        onChange={(e) => setVideoLink(e.target.value)}
+                        //defone the placeholder, and on event, change to user input
+                      />
+                      {videoLink && (
+                        <ReactPlayer width={"100%"} url={videoLink} />
+                        //   show the selected video as a preview
+                      )}
+                    </>
+                  )
+                )}
               </Editor>
             </SharedContent>
             <ShareCreation>
               <AttachAsset>
-                <AssetButton>
+                <AssetButton onClick={() => switchAssetArea("image")}>
+                  {/* added function to button for switchting to adding image  */}
                   <img
                     src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/000000/external-picture-photography-dreamstale-lineal-dreamstale.png"
                     alt=""
                   />
                 </AssetButton>
-                <AssetButton>
+                <AssetButton onClick={() => switchAssetArea("media")}>
+                  {/* added function to button for switching to adding video  */}
                   <img
                     src="https://img.icons8.com/external-dreamstale-lineal-dreamstale/32/000000/external-film-photography-dreamstale-lineal-dreamstale.png"
                     alt=""
@@ -61,7 +138,10 @@ const PostModal = (props) => {
                   Anyone
                 </AssetButton>
               </ShareComment>
-              <PostButton>Post</PostButton>
+              <PostButton disabled={!editorText ? true : false}>
+                {/* post button in the modal. it is disabled if there is no text */}
+                Post
+              </PostButton>
             </ShareCreation>
           </Content>
         </Container>
@@ -201,10 +281,13 @@ const PostButton = styled.button`
   min-width: 60px;
   border-radius: 20px;
   padding: 0 16px;
-  background: #0a66c2;
+  background: ${(props) => (props.disabled ? "rgba(0,0,0,0.8)" : "#0a66c2")};
+  /* if the button is disabled, make it grey and enabled make it blue */
   color: white;
+  border: none;
   &:hover {
-    background: #004182;
+    background: ${(props) => (props.disabled ? "rgba(0,0,0,0.8)" : "#004182")};
+    /* on hover, if button is disabled keep it grey, but if enabled make it a little more blue */
   }
 `;
 
@@ -223,4 +306,19 @@ const Editor = styled.div`
   }
 `;
 
-export default PostModal;
+const UploadImage = styled.div`
+  text-align: center;
+  img {
+    width: 100%;
+  }
+`;
+
+const mapStateToProps = (state) => {
+  return {
+    user: state.userState.user,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => ({});
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostModal);

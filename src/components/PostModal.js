@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import ReactPlayer from "react-player";
 import { connect } from "react-redux";
+import firebase from "firebase";
+import { postArticleAPI } from "../actions";
 
 const PostModal = (props) => {
   const [editorText, setEditorText] = useState("");
@@ -14,10 +16,10 @@ const PostModal = (props) => {
   //   define state to change between uploaded image and video player
 
   const handleChange = (e) => {
-    const image = e.target.files[0];
+    let image = e.target.files[0];
 
     if (image === "" || image === undefined) {
-      alert(`not an image, the file is a ${typeof image}`);
+      alert(`Not an image, The file is: ${typeof image}`);
       return;
     }
 
@@ -29,6 +31,24 @@ const PostModal = (props) => {
     setVideoLink("");
     setAssetArea(area);
     //   define states
+  };
+
+  const postArticle = (e) => {
+    e.preventDefault();
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    const payload = {
+      image: shareImage,
+      video: videoLink,
+      user: props.user,
+      description: editorText,
+      timestamp: firebase.firestore.Timestamp.now(),
+    };
+
+    props.postArticle(payload);
+    reset(e);
   };
 
   const reset = (e) => {
@@ -138,7 +158,10 @@ const PostModal = (props) => {
                   Anyone
                 </AssetButton>
               </ShareComment>
-              <PostButton disabled={!editorText ? true : false}>
+              <PostButton
+                disabled={!editorText ? true : false}
+                onClick={(event) => postArticle(event)}
+              >
                 {/* post button in the modal. it is disabled if there is no text */}
                 Post
               </PostButton>
@@ -319,6 +342,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postArticle: (payload) => dispatch(postArticleAPI(payload)),
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostModal);

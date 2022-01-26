@@ -104,6 +104,7 @@ export function postArticleAPI(payload) {
 
 export function getArticlesAPI() {
   return (dispatch) => {
+    dispatch(setLoading(true));
     let payload;
 
     db.collection("articles")
@@ -112,6 +113,7 @@ export function getArticlesAPI() {
         payload = snapshot.docs.map((doc) => doc.data());
         dispatch(getArticles(payload));
       });
+    dispatch(setLoading(false));
   };
 }
 

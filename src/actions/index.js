@@ -1,10 +1,20 @@
 import { auth, provider, storage } from "../firebase";
 import db from "../firebase";
-import { SET_USER } from "./actionType";
+import { SET_USER, SET_LOADING_STATUS, GET_ARTICLES } from "./actionType";
 
 export const setUser = (payload) => ({
   type: SET_USER,
   user: payload,
+});
+
+export const setLoading = (status) => ({
+  type: SET_LOADING_STATUS,
+  status: status,
+});
+
+export const getArticles = (payload) => ({
+  type: GET_ARTICLES,
+  payload: payload,
 });
 
 export function signInAPI() {
@@ -41,6 +51,7 @@ export function signOutAPI() {
 
 export function postArticleAPI(payload) {
   return (dispatch) => {
+    dispatch(setLoading(true));
     if (payload.image != "") {
       const upload = storage
         .ref(`images/${payload.image.name}`)
@@ -55,7 +66,7 @@ export function postArticleAPI(payload) {
             console.log(`Progress: ${progress}%`);
           }
         },
-        (error) => console.log(error.code),
+        (err) => console.log(err.code),
         async () => {
           const downloadURL = await upload.snapshot.ref.getDownloadURL();
           db.collection("articles").add({
@@ -70,6 +81,7 @@ export function postArticleAPI(payload) {
             comments: 0,
             description: payload.description,
           });
+          dispatch(setLoading(false));
         }
       );
     } else if (payload.video) {
@@ -85,6 +97,26 @@ export function postArticleAPI(payload) {
         comments: 0,
         description: payload.description,
       });
+      dispatch(setLoading(false));
     }
   };
 }
+
+export function getArticlesAPI() {
+  return (dispatch) => {
+    let payload;
+
+    db.collection("articles")
+      .orderBy("actor.date", "desc")
+      .onSnapshot((snapshot) => {
+        payload = snapshot.docs.map((doc) => doc.data());
+        dispatch(getArticles(payload));
+      });
+  };
+}
+
+// export function updateArticleAPI(payload) {
+//   return (dispatch) => {
+//     db.collection("articles").doc(payload.id).update(payload.update);
+//   };
+// }

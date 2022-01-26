@@ -16,7 +16,7 @@ const PostModal = (props) => {
   //   define state to change between uploaded image and video player
 
   const handleChange = (e) => {
-    let image = e.target.files[0];
+    const image = e.target.files[0];
 
     if (image === "" || image === undefined) {
       alert(`Not an image, The file is: ${typeof image}`);
@@ -160,7 +160,7 @@ const PostModal = (props) => {
               </ShareComment>
               <PostButton
                 disabled={!editorText ? true : false}
-                onClick={(event) => postArticle(event)}
+                onClick={(e) => postArticle(e)}
               >
                 {/* post button in the modal. it is disabled if there is no text */}
                 Post
